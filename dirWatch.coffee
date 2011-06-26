@@ -1,9 +1,6 @@
 fs = require('fs')
 events = require('events')
 
-Array::contains =(file)->
-  this.indexOf(file) isnt -1
-
 class DirWatch extends events.EventEmitter
 
   watch:(path)->
@@ -12,16 +9,16 @@ class DirWatch extends events.EventEmitter
        newWatchedFiles = []
        if files?
          for file in @watchedFiles
-           @emit("deletedfile", "#{path}/#{file}") if not files.contains(file)
+           @emit("deletedfile", "#{path}/#{file}") if file not in files
   
          for file in files  when file.match regex
            newWatchedFiles.push(file)  
-           @emit('newfile', "#{path}/#{file}") if not @watchedFiles.contains(file)     
+           @emit('newfile', "#{path}/#{file}") if file not in @watchedFiles
          @watchedFiles = newWatchedFiles
   
   constructor:(path,regex, interval)->
     @regex = new RegExp(regex)
-    interval = interval || 5000
+    interval = interval ? 5000
     @watchedFiles= []
     setInterval((->watch(path)), interval)
          
